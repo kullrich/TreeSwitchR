@@ -48,8 +48,8 @@ compare_by_idx <- function(
     tree_df,
     idx1,
     idx2,
-    chrom1=NULL,
-    chrom2=NULL,
+    chrom1 = NULL,
+    chrom2 = NULL,
     treetype = "trees",
     use.edge.length = TRUE,
     space = 0,
@@ -63,18 +63,15 @@ compare_by_idx <- function(
     show.tip.label = TRUE,
     font = 3
 ) {
-    tree1_df <- tree_df |> dplyr::slice(idx1)
-    tree2_df <- tree_df |> dplyr::slice(idx2)
-    if(!is.null(chrom1)) {
-        tree1_df <- tree_df |> dplyr::filter(chrom == chrom1) |>
-            dplyr::slice(idx1)
-    }
-    if(!is.null(chrom2)) {
-        tree2_df <- tree_df |> dplyr::filter(chrom == chrom2) |>
-            dplyr::slice(idx2)
-    }
-    xtree <- ape::read.tree(text = tree1_df[[treetype]])
-    ytree <- ape::read.tree(text = tree2_df[[treetype]])
+    xytree <- TreeSwitchR::get_by_idx(
+        tree_df = tree_df,
+        idx1 = idx1,
+        idx2 = idx2,
+        chrom1 = chrom1,
+        chrom2 = chrom2,
+        treetype = treetype)
+    xtree <- xytree[["xtree"]]
+    xtree <- xytree[["ytree"]]
     associations <- cbind(
         xtree[["tip.label"]],
         xtree[["tip.label"]])

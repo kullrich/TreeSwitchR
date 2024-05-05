@@ -19,7 +19,23 @@ biocViews: Software, ShinyApps, GUI
 Depends:
   R (>= 4.4.0)
 Imports:
+  Gviz,
+  ape,
+  dplyr,
+  ggnewscale,
+  ggplot2,
+  ggtree,
+  plotly,
+  readr,
+  rtracklayer,
+  tibble,
+  txdbmaker
 Suggests:
+  rmarkdown,
+  knitr,
+  devtools,
+  testthat,
+  BiocStyle
 VignetteBuilder: knitr
 NeedsCompilation: no
 URL: https://github.com/kullrich/TreeSwitchR

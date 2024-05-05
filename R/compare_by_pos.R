@@ -37,10 +37,14 @@
 #' @examples
 #' trees <- ape::rmtree(N = 100, n = 4, rooted = FALSE)
 #' topologies <- TreeSwitchR::get_topologies(trees)
-#' TreeSwitchR::compare_by_idx(
+#' TreeSwitchR::compare_by_pos(
 #'     tree_df = topologies[["tree_df"]],
-#'     idx1 = 1,
-#'     idx2 = 2)
+#'     chrom1 = "chrom",
+#'     chromStart1 = 1,
+#'     chromEnd1 = 2,
+#'     chrom2 = "chrom",
+#'     chromStart2 = 5,
+#'     chromEnd2 = 6)
 #' @export compare_by_pos
 #' @author Kristian K Ullrich
 
