@@ -7,22 +7,11 @@ Given a tree file and the corresponding genomic positions, trees are visualized 
 ## Installation instructions
 
 Get the latest stable `R` release from
-[CRAN](http://cran.r-project.org/). Then install `TreeSwitchR` from
-[Bioconductor](http://bioconductor.org/) using the following code:
-
-``` r
-if (!requireNamespace("BiocManager", quietly = TRUE)) {
-    install.packages("BiocManager")
-}
-
-BiocManager::install("TreeSwitchR")
-```
-
-And the development version from
+[CRAN](http://cran.r-project.org/). Then install the `TreeSwitchR` development version from
 [GitHub](https://github.com/kullrich/TreeSwitchR) with:
 
 ``` r
-BiocManager::install("kullrich/TreeSwitchR")
+devtools::install_github("kullrich/TreeSwitchR")
 ```
 
 ## Code of Conduct - Participation guidelines
