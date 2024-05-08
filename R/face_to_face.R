@@ -3,6 +3,10 @@
 #' @description This function plots two trees face to face.
 #' @param xtree xtree
 #' @param ytree ytree
+#' @param layout layout
+#' @param link_color link color
+#' @param tip_color tip color
+#' @param link_space link space
 #' @importFrom ggnewscale new_scale_fill
 #' @importFrom ggplot2 geom_line
 #' @importFrom ggtree ggtree geom_tree geom_tiplab

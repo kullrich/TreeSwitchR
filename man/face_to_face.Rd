@@ -18,6 +18,14 @@ face_to_face(
 \item{xtree}{xtree}
 
 \item{ytree}{ytree}
+
+\item{layout}{layout}
+
+\item{link_color}{link color}
+
+\item{tip_color}{tip color}
+
+\item{link_space}{link space}
 }
 \description{
 This function plots two trees face to face.

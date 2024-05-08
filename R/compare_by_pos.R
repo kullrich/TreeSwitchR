@@ -69,12 +69,17 @@ compare_by_pos <- function(
     show.tip.label = TRUE,
     font = 3
 ) {
-    tree1_df <- tree_df |> dplyr::filter(
-        chrom == chrom1, chromStart == chromStart1, chromEnd == chromEnd1)
-    tree2_df <- tree_df |> dplyr::filter(
-        chrom == chrom2, chromStart == chromStart2, chromEnd == chromEnd2)
-    xtree <- ape::read.tree(text = tree1_df[[treetype]])
-    ytree <- ape::read.tree(text = tree2_df[[treetype]])
+    xytree <- TreeSwitchR::get_by_pos(
+        tree_df = tree_df,
+        chrom1 = chrom1,
+        chromStart1 = chromStart1,
+        chromEnd1 = chromEnd1,
+        chrom2 = chrom2,
+        chromStart2 = chromStart2,
+        chromEnd2 = chromEnd2,
+        treetype = treetype)
+    xtree <- xytree[["xtree"]]
+    ytree <- xytree[["ytree"]]
     associations <- cbind(
         xtree[["tip.label"]],
         xtree[["tip.label"]])

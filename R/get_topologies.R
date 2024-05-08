@@ -16,6 +16,8 @@
 #' @param outgroup [optional]
 #' @param sort specify if trees should be sorted by tree position first [TRUE]
 #' @importFrom ape read.tree write.tree root rmtree
+#' @importFrom dplyr group_by summarise
+#' @importFrom GenomicRanges GRanges
 #' @seealso \code{\link[Gviz]{GeneRegionTrack}}
 #' @seealso \code{\link[Gviz]{plotTracks}}
 #' @examples
@@ -40,6 +42,10 @@ get_topologies <- function(
         trees <- ordered_trees[["ordered_trees"]]
         pos <- ordered_trees[["ordered_pos"]]
     }
+    seqlen_df<- pos |>
+        dplyr::group_by(chrom) |>
+        dplyr::summarise(seqlength = max(chromEnd))
+    seqlengths <- setNames(seqlen_df[["seqlength"]], seqlen_df[["chrom"]])
     rooted_trees <- NULL
     if(!is.null(outgroup)) {
         rooted_trees <- ape::read.tree(
@@ -89,21 +95,41 @@ get_topologies <- function(
         decreasing = FALSE)
     topos <- seq(from = length(topo_trees_table_sorted), to = 1)
     names(topos) <- names(topo_trees_table_sorted)
+    topology_n = topos[ape::write.tree(topo_trees)]
+    topology_n_counts = topo_trees_table_sorted[
+      ape::write.tree(topo_trees)]
+    topo_switches <- numeric(dim(tree_df)[1])
+    topo_switches[
+      TreeSwitchR::get_not_consecutive(topology_n)] <- 1
+    topo_switches_pairs <- rep("", length(topo_switches))
+    for(i in which(topo_switches == 1)) {
+      i_switch <- topology_n[i]
+      j_switch <- topology_n[i + 1]
+      ij_switch <- paste0(
+        min(c(i_switch, j_switch)), "-", max(c(i_switch, j_switch)))
+      topo_switches_pairs[i] <- ij_switch
+    }
+    topo_switches_pairs_counts <- rep(0, length(topo_switches))
+    topo_switches_pairs_counts[which(topo_switches_pairs != "")] <- table(
+        topo_switches_pairs[which(topo_switches_pairs != "")])[
+        topo_switches_pairs[which(topo_switches_pairs != "")]]
     tree_df <- tibble::tibble(
         trees = ape::write.tree(trees),
         rooted_trees = ape::write.tree(rooted_trees),
         topology_trees = ape::write.tree(topo_trees),
-        topology_n = topos[ape::write.tree(topo_trees)],
+        topology_n = topology_n,
+        topology_n_counts = as.numeric(topology_n_counts),
+        topo_switches = topo_switches,
+        topo_switches_pairs = topo_switches_pairs,
+        topo_switches_pairs_counts = topo_switches_pairs_counts,
         chrom = pos[["chrom"]],
         chromStart = pos[["chromStart"]],
         chromEnd = pos[["chromEnd"]]
     )
-    topo_switches <- numeric(dim(tree_df)[1])
-    topo_switches[
-        TreeSwitchR::get_not_consecutive(tree_df[["topology_n"]])] <- 1
-    tree_df["topo_switches"] <- topo_switches
+    tree_gr <- GenomicRanges::GRanges(tree_df, seqlengths = seqlengths)
     out <- list(
         tree_df,
+        tree_gr,
         trees,
         rooted_trees,
         topo_trees,
@@ -112,6 +138,7 @@ get_topologies <- function(
         pos)
     names(out) <- c(
         "tree_df",
+        "tree_gr",
         "trees",
         "rooted_trees",
         "topo_trees",

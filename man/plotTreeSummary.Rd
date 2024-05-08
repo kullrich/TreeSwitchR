@@ -4,7 +4,7 @@
 \alias{plotTreeSummary}
 \title{plotTreeSummary}
 \usage{
-plotTreeSummary(tree_df, chrom = NULL, chromPad = 1)
+plotTreeSummary(tree_df, chrom = NULL, chromPad = 1, colorBy = "rank")
 }
 \arguments{
 \item{tree_df}{tree \code{data.frame} produced by
@@ -13,6 +13,8 @@ plotTreeSummary(tree_df, chrom = NULL, chromPad = 1)
 \item{chrom}{select chromosome to plot summary [optional]}
 
 \item{chromPad}{distance between chromosomes [optional]}
+
+\item{colorBy}{color tree topologies either by rank [default] or by counts}
 }
 \description{
 This function plots tree topologies distribution along
@@ -21,7 +23,11 @@ chromsomes.
 \examples{
 trees <- ape::rmtree(N = 100, n = 4, rooted = FALSE)
 topologies <- TreeSwitchR::get_topologies(trees)
-TreeSwitchR::plotTreeSummary(topologies[["tree_df"]])
+tree_df <- topologies[["tree_df"]]
+p1 <- TreeSwitchR::plotTreeSummary(tree_df, colorBy = "rank")
+p2 <- TreeSwitchR::plotTreeSummary(tree_df, colorBy = "counts")
+plotly::subplot(p1[["fig"]], p2[["fig"]])
+
 }
 \author{
 Kristian K Ullrich

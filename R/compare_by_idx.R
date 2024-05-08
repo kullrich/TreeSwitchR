@@ -71,7 +71,7 @@ compare_by_idx <- function(
         chrom2 = chrom2,
         treetype = treetype)
     xtree <- xytree[["xtree"]]
-    xtree <- xytree[["ytree"]]
+    ytree <- xytree[["ytree"]]
     associations <- cbind(
         xtree[["tip.label"]],
         xtree[["tip.label"]])

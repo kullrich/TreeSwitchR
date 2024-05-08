@@ -6,20 +6,26 @@
 #' \code{get_topologies} [mandatory]
 #' @param chrom select chromosome to plot summary [optional]
 #' @param chromPad distance between chromosomes [optional]
+#' @param colorBy color tree topologies either by rank [default] or by counts
 #' @importFrom dplyr filter
 #' @importFrom ggplot2 ggplot aes geom_point labs geom_vline
 #' @importFrom plotly ggplotly
 #' @examples
 #' trees <- ape::rmtree(N = 100, n = 4, rooted = FALSE)
 #' topologies <- TreeSwitchR::get_topologies(trees)
-#' TreeSwitchR::plotTreeSummary(topologies[["tree_df"]])
+#' tree_df <- topologies[["tree_df"]]
+#' p1 <- TreeSwitchR::plotTreeSummary(tree_df, colorBy = "rank")
+#' p2 <- TreeSwitchR::plotTreeSummary(tree_df, colorBy = "counts")
+#' plotly::subplot(p1[["fig"]], p2[["fig"]])
+#'
 #' @export plotTreeSummary
 #' @author Kristian K Ullrich
 
 plotTreeSummary <- function(
     tree_df,
     chrom = NULL,
-    chromPad = 1) {
+    chromPad = 1,
+    colorBy = "rank") {
     if(!is.null(chrom)) {
         tree_df <- tree_df |> dplyr::filter(chrom == chrom)
     }
@@ -41,8 +47,9 @@ plotTreeSummary <- function(
     } else {
         tree_df[["x_axis"]] <- tree_df[["chromStart"]]
     }
-    fig_tree <- ggplot2::ggplot(data = tree_df,
-        ggplot2::aes(x = x_axis, y = topology_n)) +
+    if(colorBy == "rank") {
+        fig_tree <- ggplot2::ggplot(data = tree_df,
+            ggplot2::aes(x = x_axis, y = topology_n)) +
         ggplot2::geom_point(
             ggplot2::aes(color = as.factor(topology_n)),
             show.legend = FALSE
@@ -51,14 +58,50 @@ plotTreeSummary <- function(
             title = "Tree Summary",
             x = "",
             y = "tree topology")
-    for(c_split in chrom_split) {
-        fig_tree <- fig_tree +
+        for(c_split in chrom_split) {
+            fig_tree <- fig_tree +
             ggplot2::geom_vline(xintercept = tree_df[["chromEnd"]][c_split] +
-            chromPad, linetype="dashed", color = "red")
+                chromPad, linetype="dashed", color = "red")
+        }
+    } else if(colorBy == "counts") {
+        fig_tree <- ggplot2::ggplot(data = tree_df,
+            ggplot2::aes(x = x_axis, y = topology_n)) +
+        ggplot2::geom_point(
+            ggplot2::aes(color = topology_n_counts),
+            show.legend = FALSE
+        ) +
+        ggplot2::labs(
+            title = "Tree Summary",
+            x = "",
+            y = "tree topology")
+        for(c_split in chrom_split) {
+            fig_tree <- fig_tree +
+            ggplot2::geom_vline(xintercept = tree_df[["chromEnd"]][c_split] +
+                chromPad, linetype="dashed", color = "red")
+        }
+    } else {
+        fig_tree <- ggplot2::ggplot(data = tree_df,
+            ggplot2::aes(x = x_axis, y = topology_n)) +
+        ggplot2::geom_point(
+            show.legend = FALSE
+        ) +
+        ggplot2::labs(
+            title = "Tree Summary",
+            x = "",
+            y = "tree topology")
+        for(c_split in chrom_split) {
+            fig_tree <- fig_tree +
+            ggplot2::geom_vline(xintercept = tree_df[["chromEnd"]][c_split] +
+                chromPad, linetype="dashed", color = "red")
+        }
     }
     fig_switches <- ggplot2::ggplot(data = tree_df,
         ggplot2::aes(x = x_axis, ymax= topo_switches, ymin = 0)) +
         ggplot2::geom_linerange() +
+        ggplot2::geom_point(
+            ggplot2::aes(
+                x = x_axis, y = 0.5, color = as.factor(topology_n)
+            ), show.legend = FALSE)
         ggplot2::labs(
             x = "position (bp)")
     for(c_split in chrom_split) {
@@ -67,8 +110,8 @@ plotTreeSummary <- function(
                               chromPad, linetype="dashed", color = "red")
     }
     fig <- plotly::subplot(
-        fig_tree,
-        fig_switches,
+        plotly::style(fig_tree, showlegend = FALSE),
+        plotly::style(fig_switches, showlegend = FALSE),
         nrows = 2,
         heights = c(0.9, 0.1),
         margin = 0.05,
