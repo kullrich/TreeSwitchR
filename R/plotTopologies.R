@@ -12,9 +12,10 @@
 #' @importFrom ggtree ggtree geom_tiplab
 #' @examples
 #' trees <- ape::rmtree(N = 100, n = 4, rooted = FALSE)
-#' topologies <- TreeSwitchR::get_topologies(trees)
-#' plotTopologies(
-#'     tree_df = topologies[["tree_df"]])
+#' data("pos", package = "TreeSwitchR")
+#' topologies <- TreeSwitchR::get_topologies(trees, pos)
+#' tree_df <- topologies[["tree_df"]]
+#' plotTopologies(tree_df = tree_df)
 #' @export plotTopologies
 #' @author Kristian K Ullrich
 

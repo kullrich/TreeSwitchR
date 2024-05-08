@@ -30,8 +30,10 @@ chrom, chromStart, chromEnd
 }
 \examples{
 trees <- ape::rmtree(N = 100, n = 4, rooted = FALSE)
-topologies <- TreeSwitchR::get_topologies(trees)
-topologies[["tree_df"]]
+data("pos", package = "TreeSwitchR")
+topologies <- TreeSwitchR::get_topologies(trees, pos)
+tree_df <- topologies[["tree_df"]]
+tree_gr <- topologies[["tree_gr"]]
 }
 \seealso{
 \code{\link[Gviz]{GeneRegionTrack}}

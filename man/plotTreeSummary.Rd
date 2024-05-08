@@ -4,7 +4,13 @@
 \alias{plotTreeSummary}
 \title{plotTreeSummary}
 \usage{
-plotTreeSummary(tree_df, chrom = NULL, chromPad = 1, colorBy = "rank")
+plotTreeSummary(
+  tree_df,
+  chrom = NULL,
+  chromPad = 0,
+  colorBy = "rank",
+  chromSplitColor = "red"
+)
 }
 \arguments{
 \item{tree_df}{tree \code{data.frame} produced by
@@ -12,17 +18,20 @@ plotTreeSummary(tree_df, chrom = NULL, chromPad = 1, colorBy = "rank")
 
 \item{chrom}{select chromosome to plot summary [optional]}
 
-\item{chromPad}{distance between chromosomes [optional]}
+\item{chromPad}{distance between chromosomes [0]}
 
 \item{colorBy}{color tree topologies either by rank [default] or by counts}
+
+\item{chromSplitColor}{color of chrom split [red]}
 }
 \description{
 This function plots tree topologies distribution along
-chromsomes.
+chromosomes.
 }
 \examples{
 trees <- ape::rmtree(N = 100, n = 4, rooted = FALSE)
-topologies <- TreeSwitchR::get_topologies(trees)
+data("pos", package = "TreeSwitchR")
+topologies <- TreeSwitchR::get_topologies(trees, pos)
 tree_df <- topologies[["tree_df"]]
 p1 <- TreeSwitchR::plotTreeSummary(tree_df, colorBy = "rank")
 p2 <- TreeSwitchR::plotTreeSummary(tree_df, colorBy = "counts")
