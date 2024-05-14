@@ -11,7 +11,7 @@ Get the latest stable `R` release from
 [GitHub](https://github.com/kullrich/TreeSwitchR) with:
 
 ``` r
-devtools::install_github("kullrich/TreeSwitchR")
+devtools::install_github("kullrich/TreeSwitchR", dependencies = TRUE)
 ```
 
 ## Code of Conduct - Participation guidelines

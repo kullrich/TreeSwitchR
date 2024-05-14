@@ -37,7 +37,7 @@ plotTopologies <- function(
         decreasing = TRUE)
     gg <- ggtree::ggtree(unique_topologies, ...) +
         ggtree::geom_tiplab(colour = tip_color, ...) +
-        ggplot2::facet_wrap(~.id, scale="free", nrow = nrow, ncol = ncol, ...) +
+        ggplot2::facet_wrap(~.id, scale="free", nrow = nrow, ncol = ncol) +
         ggplot2::ggtitle(title)
     tree_titles <- paste0(
         gg[["data"]][[".id"]],
