@@ -5,9 +5,14 @@
 #' @param tree_df tree \code{data.frame} produced by
 #' \code{get_topologies} [mandatory]
 #' @param chrom select chromosome to plot summary [optional]
+#' @param chromStart select chromosome start to plot [optional]
+#' @param chromEnd select chromosome end to plot [optional]
 #' @param chromPad distance between chromosomes [0]
 #' @param colorBy color tree topologies either by rank [default] or by counts
 #' @param chromSplitColor color of chrom split [red]
+#' @param plotType plot type either by point [default] or lollipop
+#' @param pointSize point size [0.5]
+#' @param pointShape point shape [15]
 #' @importFrom dplyr filter
 #' @importFrom ggplot2 ggplot aes geom_point labs geom_vline element_blank
 #' geom_linerange
@@ -43,11 +48,24 @@
 plotTreeSummary <- function(
     tree_df,
     chrom = NULL,
+    chromStart = NULL,
+    chromEnd = NULL,
     chromPad = 0,
     colorBy = "rank",
-    chromSplitColor = "red") {
+    chromSplitColor = "red",
+    plotType = "point",
+    pointSize = 0.5,
+    pointShape = 15) {
     if(!is.null(chrom)) {
         tree_df <- tree_df |> dplyr::filter(.data[["chrom"]] == .env[["chrom"]])
+    }
+    if(!is.null(chromStart)) {
+        tree_df <- tree_df |> dplyr::filter(.data[["chromStart"]] >=
+            .env[["chromStart"]])
+    }
+    if(!is.null(chromStart)) {
+        tree_df <- tree_df |> dplyr::filter(.data[["chromEnd"]] <=
+            .env[["chromEnd"]])
     }
     chrom_split <- TreeSwitchR::get_not_consecutive(tree_df[["chrom"]])
     if(length(chrom_split) != 0) {
@@ -68,12 +86,12 @@ plotTreeSummary <- function(
         tree_df[["x_axis"]] <- tree_df[["chromStart"]]
     }
     if(colorBy == "rank") {
-        fig_tree <- ggplot2::ggplot(data = tree_df,
-            ggplot2::aes(x = x_axis, y = topology_n)) +
+        if(plotType == "point") {
+            fig_tree <- ggplot2::ggplot(data = tree_df,
+                ggplot2::aes(x = x_axis, y = topology_n)) +
             ggplot2::geom_point(
                 ggplot2::aes(color = as.factor(topology_n)),
-                show.legend = FALSE, shape = 15
-            ) +
+                show.legend = FALSE, shape = pointShape, size = pointSize) +
             ggplot2::labs(
                 title = "Tree Summary",
                 x = NULL,
@@ -82,18 +100,37 @@ plotTreeSummary <- function(
                 axis.text.x = ggplot2::element_blank(),
                 axis.ticks.x = ggplot2::element_blank()
             )
+        } else if(plotType == "lollipop") {
+            fig_tree <- ggplot2::ggplot(data = tree_df,
+                ggplot2::aes(x = x_axis, y = topology_n)) +
+            ggplot2::geom_point(
+                ggplot2::aes(color = as.factor(topology_n)),
+                show.legend = FALSE, shape = pointShape, size = pointSize) +
+            ggplot2::geom_segment(
+                ggplot2::aes(x = x_axis, xend = x_axis,
+                y = 0, yend = topology_n, color = as.factor(topology_n)),
+                show.legend = FALSE) +
+            ggplot2::labs(
+                title = "Tree Summary",
+                x = NULL,
+                y = "tree topology") +
+            ggplot2::theme(
+                axis.text.x = ggplot2::element_blank(),
+                axis.ticks.x = ggplot2::element_blank()
+            )
+        }
         for(c_split in chrom_split) {
             fig_tree <- fig_tree +
-            ggplot2::geom_vline(xintercept = tree_df[["chromEnd"]][c_split] +
-                chromPad, linetype="dashed", color = chromSplitColor)
+              ggplot2::geom_vline(xintercept = tree_df[["chromEnd"]][c_split] +
+                  chromPad, linetype="dashed", color = chromSplitColor)
         }
     } else if(colorBy == "counts") {
-        fig_tree <- ggplot2::ggplot(data = tree_df,
-            ggplot2::aes(x = x_axis, y = topology_n)) +
+        if(plotType == "point") {
+            fig_tree <- ggplot2::ggplot(data = tree_df,
+                ggplot2::aes(x = x_axis, y = topology_n)) +
             ggplot2::geom_point(
                 ggplot2::aes(color = topology_n_counts),
-                show.legend = FALSE, shape = 15
-            ) +
+                show.legend = FALSE, shape = pointShape, size = pointSize) +
             ggplot2::labs(
                 title = "Tree Summary",
                 x = NULL,
@@ -102,17 +139,36 @@ plotTreeSummary <- function(
                 axis.text.x = ggplot2::element_blank(),
                 axis.ticks.x = ggplot2::element_blank()
             )
+        } else if(plotType == "lollipop") {
+            fig_tree <- ggplot2::ggplot(data = tree_df,
+                ggplot2::aes(x = x_axis, y = topology_n)) +
+            ggplot2::geom_point(
+                ggplot2::aes(color = topology_n_counts),
+                show.legend = FALSE, shape = pointShape, size = pointSize) +
+            ggplot2::geom_segment(
+                ggplot2::aes(x = x_axis, xend = x_axis,
+                y = 0, yend = topology_n, color = as.factor(topology_n)),
+                show.legend = FALSE) +
+            ggplot2::labs(
+                title = "Tree Summary",
+                x = NULL,
+                y = "tree topology") +
+            ggplot2::theme(
+                axis.text.x = ggplot2::element_blank(),
+                axis.ticks.x = ggplot2::element_blank()
+            )
+        }
         for(c_split in chrom_split) {
             fig_tree <- fig_tree +
             ggplot2::geom_vline(xintercept = tree_df[["chromEnd"]][c_split] +
                 chromPad, linetype="dashed", color = chromSplitColor)
         }
     } else {
-        fig_tree <- ggplot2::ggplot(data = tree_df,
-            ggplot2::aes(x = x_axis, y = topology_n)) +
+        if(plotType == "point") {
+            fig_tree <- ggplot2::ggplot(data = tree_df,
+                ggplot2::aes(x = x_axis, y = topology_n)) +
             ggplot2::geom_point(
-                show.legend = FALSE, shape = 15
-            ) +
+                show.legend = FALSE, shape = pointShape, size = pointSize) +
             ggplot2::labs(
                 title = "Tree Summary",
                 x = NULL,
@@ -121,6 +177,24 @@ plotTreeSummary <- function(
                 axis.text.x = ggplot2::element_blank(),
                 axis.ticks.x = ggplot2::element_blank()
             )
+        } else if(plotType == "loillipop") {
+            fig_tree <- ggplot2::ggplot(data = tree_df,
+                ggplot2::aes(x = x_axis, y = topology_n)) +
+            ggplot2::geom_point(
+                show.legend = FALSE, shape = pointShape, size = pointSize) +
+            ggplot2::geom_segment(
+                ggplot2::aes(x = x_axis, xend = x_axis,
+                y = 0, yend = topology_n),
+                show.legend = FALSE) +
+            ggplot2::labs(
+                title = "Tree Summary",
+                x = NULL,
+                y = "tree topology") +
+            ggplot2::theme(
+                axis.text.x = ggplot2::element_blank(),
+                axis.ticks.x = ggplot2::element_blank()
+            )
+        }
         for(c_split in chrom_split) {
             fig_tree <- fig_tree +
             ggplot2::geom_vline(xintercept = tree_df[["chromEnd"]][c_split] +
@@ -134,7 +208,7 @@ plotTreeSummary <- function(
             ggplot2::geom_point(
                 ggplot2::aes(
                     x = x_axis, y = 0.5, color = as.factor(topology_n)
-                ), show.legend = FALSE, shape = 15) +
+                ), show.legend = FALSE, shape = pointShape, size = pointSize) +
             ggplot2::labs(
                 x = NULL,
                 y = NULL) +
@@ -157,7 +231,7 @@ plotTreeSummary <- function(
             ggplot2::geom_point(
                 ggplot2::aes(
                     x = x_axis, y = 0.5, color = topology_n_counts
-                ), show.legend = FALSE, shape = 15) +
+                ), show.legend = FALSE, shape = pointShape, size = pointSize) +
             ggplot2::labs(
                 x = NULL,
                 y = NULL) +
@@ -180,7 +254,7 @@ plotTreeSummary <- function(
             ggplot2::geom_point(
                 ggplot2::aes(
                     x = x_axis, y = 0.5, color = "grey"
-                ), show.legend = FALSE, shape = 15) +
+                ), show.legend = FALSE, shape = pointShape, size = pointSize) +
             ggplot2::labs(
                 x = NULL,
                 y = NULL) +

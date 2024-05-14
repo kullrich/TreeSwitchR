@@ -7,9 +7,14 @@
 plotTreeSummary(
   tree_df,
   chrom = NULL,
+  chromStart = NULL,
+  chromEnd = NULL,
   chromPad = 0,
   colorBy = "rank",
-  chromSplitColor = "red"
+  chromSplitColor = "red",
+  plotType = "point",
+  pointSize = 0.5,
+  pointShape = 15
 )
 }
 \arguments{
@@ -18,11 +23,21 @@ plotTreeSummary(
 
 \item{chrom}{select chromosome to plot summary [optional]}
 
+\item{chromStart}{select chromosome start to plot [optional]}
+
+\item{chromEnd}{select chromosome end to plot [optional]}
+
 \item{chromPad}{distance between chromosomes [0]}
 
 \item{colorBy}{color tree topologies either by rank [default] or by counts}
 
 \item{chromSplitColor}{color of chrom split [red]}
+
+\item{plotType}{plot type either by point [default] or lollipop}
+
+\item{pointSize}{point size [0.5]}
+
+\item{pointShape}{point shape [15]}
 }
 \description{
 This function plots tree topologies distribution along

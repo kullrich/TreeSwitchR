@@ -10,6 +10,7 @@ plotTopologies(
   ncol = NULL,
   title = "Tree Topologies",
   tip_color = par("fg"),
+  tip_size = 3.88,
   ...
 )
 }
@@ -24,6 +25,8 @@ plotTopologies(
 \item{title}{title}
 
 \item{tip_color}{tip color}
+
+\item{tip_size}{tip label size [3.88]}
 }
 \description{
 This function plots topologies given a \code{tree_df}

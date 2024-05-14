@@ -7,6 +7,7 @@
 #' @param ncol number of columns
 #' @param title title
 #' @param tip_color tip color
+#' @param tip_size tip label size [3.88]
 #' @importFrom ape read.tree
 #' @importFrom ggplot2 facet_wrap ggtitle
 #' @importFrom ggtree ggtree geom_tiplab
@@ -25,6 +26,7 @@ plotTopologies <- function(
     ncol = NULL,
     title = "Tree Topologies",
     tip_color = par("fg"),
+    tip_size = 3.88,
     ...) {
     unique_topologies <- ape::read.tree(
         text = names(
@@ -36,7 +38,7 @@ plotTopologies <- function(
         tree_df[["topology_n_counts"]][!duplicated(tree_df[["topology_n"]])],
         decreasing = TRUE)
     gg <- ggtree::ggtree(unique_topologies, ...) +
-        ggtree::geom_tiplab(colour = tip_color, ...) +
+        ggtree::geom_tiplab(colour = tip_color, size = tip_size, ...) +
         ggplot2::facet_wrap(~.id, scale="free", nrow = nrow, ncol = ncol) +
         ggplot2::ggtitle(title)
     tree_titles <- paste0(
