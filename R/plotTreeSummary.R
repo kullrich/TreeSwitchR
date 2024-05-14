@@ -17,9 +17,25 @@
 #' data("pos", package = "TreeSwitchR")
 #' topologies <- TreeSwitchR::get_topologies(trees, pos)
 #' tree_df <- topologies[["tree_df"]]
-#' p1 <- TreeSwitchR::plotTreeSummary(tree_df, colorBy = "rank")
-#' p2 <- TreeSwitchR::plotTreeSummary(tree_df, colorBy = "counts")
-#' plotly::subplot(p1[["fig"]], p2[["fig"]])
+#' p1 <- TreeSwitchR::plotTreeSummary(
+#'     tree_df,
+#'     colorBy = "rank")
+#' p2 <- TreeSwitchR::plotTreeSummary(
+#'     tree_df,
+#'     colorBy = "counts")
+#' p3 <- TreeSwitchR::plotTreeSummary(
+#'     tree_df,
+#'     colorBy = "rank",
+#'     chrom = "chr1")
+#' p4 <- TreeSwitchR::plotTreeSummary(
+#'     tree_df,
+#'     colorBy = "rank",
+#'     chrom = "chr2")
+#' plotly::subplot(
+#'     p1[["fig"]],
+#'     p2[["fig"]],
+#'     p3[["fig"]],
+#'     p4[["fig"]])
 #'
 #' @export plotTreeSummary
 #' @author Kristian K Ullrich
@@ -31,7 +47,7 @@ plotTreeSummary <- function(
     colorBy = "rank",
     chromSplitColor = "red") {
     if(!is.null(chrom)) {
-        tree_df <- tree_df |> dplyr::filter(chrom == chrom)
+        tree_df <- tree_df |> dplyr::filter(.data[["chrom"]] == .env[["chrom"]])
     }
     chrom_split <- TreeSwitchR::get_not_consecutive(tree_df[["chrom"]])
     if(length(chrom_split) != 0) {

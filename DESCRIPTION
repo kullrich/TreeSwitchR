@@ -35,7 +35,9 @@ Suggests:
   knitr,
   devtools,
   testthat,
-  BiocStyle
+  BiocStyle,
+  Biostrings,
+  MSA2dist
 VignetteBuilder: knitr
 NeedsCompilation: no
 URL: https://github.com/kullrich/TreeSwitchR

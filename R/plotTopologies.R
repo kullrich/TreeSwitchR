@@ -27,9 +27,24 @@ plotTopologies <- function(
     tip_color = par("fg"),
     ...) {
     unique_topologies <- ape::read.tree(
-        text = names(table(tree_df[["topology_trees"]])))
-    ggtree::ggtree(unique_topologies, ...) +
+        text = names(
+        base::sort(
+            tree_df[["topology_n"]][!duplicated(tree_df[["topology_n"]])])
+        )
+    )
+    unique_topologies_counts <- base::sort(
+        tree_df[["topology_n_counts"]][!duplicated(tree_df[["topology_n"]])],
+        decreasing = TRUE)
+    gg <- ggtree::ggtree(unique_topologies, ...) +
         ggtree::geom_tiplab(colour = tip_color, ...) +
         ggplot2::facet_wrap(~.id, scale="free", nrow = nrow, ncol = ncol, ...) +
         ggplot2::ggtitle(title)
+    tree_titles <- paste0(
+        gg[["data"]][[".id"]],
+        " - ",
+        unique_topologies_counts[as.numeric(
+            gsub("Tree #", "", gg[["data"]][[".id"]]))])
+    gg[["data"]][[".id"]] <- base::factor(
+        tree_titles, levels = base::unique(tree_titles))
+    gg
 }

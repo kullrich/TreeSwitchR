@@ -33,9 +33,25 @@ trees <- ape::rmtree(N = 100, n = 4, rooted = FALSE)
 data("pos", package = "TreeSwitchR")
 topologies <- TreeSwitchR::get_topologies(trees, pos)
 tree_df <- topologies[["tree_df"]]
-p1 <- TreeSwitchR::plotTreeSummary(tree_df, colorBy = "rank")
-p2 <- TreeSwitchR::plotTreeSummary(tree_df, colorBy = "counts")
-plotly::subplot(p1[["fig"]], p2[["fig"]])
+p1 <- TreeSwitchR::plotTreeSummary(
+    tree_df,
+    colorBy = "rank")
+p2 <- TreeSwitchR::plotTreeSummary(
+    tree_df,
+    colorBy = "counts")
+p3 <- TreeSwitchR::plotTreeSummary(
+    tree_df,
+    colorBy = "rank",
+    chrom = "chr1")
+p4 <- TreeSwitchR::plotTreeSummary(
+    tree_df,
+    colorBy = "rank",
+    chrom = "chr2")
+plotly::subplot(
+    p1[["fig"]],
+    p2[["fig"]],
+    p3[["fig"]],
+    p4[["fig"]])
 
 }
 \author{

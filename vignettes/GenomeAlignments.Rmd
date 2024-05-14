@@ -1,0 +1,26 @@
+---
+title: "Genome Alignments Vignette"
+author: "Kristian K Ullrich"
+date: "`r Sys.Date()`"
+abstract: >
+    This vignette will give an easy example how to align genomes to each other
+    and extract neighbor-joining trees along chromosomes given a reference and
+    query genomes.
+bibliography: genomeAlignments.bib
+nocite: '@*'
+output: BiocStyle::html_document
+vignette: >
+    %\VignetteIndexEntry{Genome Alignments Vignette}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+---
+
+```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+suppressPackageStartupMessages({
+    library(Biostrings)
+    library(MSA2dist)
+    library(ape)
+    library(TreeSwitchR)
+    
+    })
+```

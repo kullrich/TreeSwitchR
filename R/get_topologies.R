@@ -100,7 +100,7 @@ get_topologies <- function(
     topology_n = topos[ape::write.tree(topo_trees)]
     topology_n_counts = topo_trees_table_sorted[
       ape::write.tree(topo_trees)]
-    topo_switches <- numeric(dim(tree_df)[1])
+    topo_switches <- numeric(length(trees))
     topo_switches[
       TreeSwitchR::get_not_consecutive(topology_n)] <- 1
     topo_switches_pairs <- rep("", length(topo_switches))
